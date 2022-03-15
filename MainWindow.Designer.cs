@@ -51,6 +51,7 @@ namespace MessBatch
             this.stringReverserRadio = new System.Windows.Forms.RadioButton();
             this.colorSwapperRadio = new System.Windows.Forms.RadioButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.saveCorruptedFile = new System.Windows.Forms.SaveFileDialog();
             this.previewGroup.SuspendLayout();
             this.corruptionsGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strengthBar)).BeginInit();
@@ -82,7 +83,7 @@ namespace MessBatch
             // openBatchfile
             // 
             this.openBatchfile.DefaultExt = "bat";
-            this.openBatchfile.Filter = "Batch files or Windows NT command scripts|*.bat;*.cmd";
+            this.openBatchfile.Filter = "Batch files or Windows NT command scripts|*.bat;*.cmd|All files|*.*";
             // 
             // openBatchfileButton
             // 
@@ -176,8 +177,9 @@ namespace MessBatch
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 4;
-            this.saveButton.Text = "&Save";
+            this.saveButton.Text = "&Save as";
             this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // corruptButton
             // 
@@ -188,28 +190,30 @@ namespace MessBatch
             this.corruptButton.TabIndex = 3;
             this.corruptButton.Text = "Co&rrupt!";
             this.corruptButton.UseVisualStyleBackColor = true;
+            this.corruptButton.Click += new System.EventHandler(this.corruptButton_Click);
             // 
             // strengthBar
             // 
             this.strengthBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.strengthBar.Location = new System.Drawing.Point(6, 124);
-            this.strengthBar.Maximum = 100;
+            this.strengthBar.Maximum = 10000;
             this.strengthBar.Minimum = 1;
             this.strengthBar.Name = "strengthBar";
             this.strengthBar.Size = new System.Drawing.Size(266, 45);
             this.strengthBar.TabIndex = 2;
-            this.strengthBar.TickFrequency = 10;
+            this.strengthBar.TickFrequency = 1000;
             this.strengthBar.Value = 1;
+            this.strengthBar.Scroll += new System.EventHandler(this.strengthBar_Scroll);
             // 
             // strengthLabel
             // 
             this.strengthLabel.AutoSize = true;
             this.strengthLabel.Location = new System.Drawing.Point(6, 106);
             this.strengthLabel.Name = "strengthLabel";
-            this.strengthLabel.Size = new System.Drawing.Size(64, 15);
+            this.strengthLabel.Size = new System.Drawing.Size(89, 15);
             this.strengthLabel.TabIndex = 1;
-            this.strengthLabel.Text = "Strength: 1";
+            this.strengthLabel.Text = "Strength: 0,01%";
             // 
             // corruptionSelectorPanel
             // 
@@ -293,6 +297,11 @@ namespace MessBatch
             this.colorSwapperRadio.UseVisualStyleBackColor = true;
             this.colorSwapperRadio.CheckedChanged += new System.EventHandler(this.SwapDescription);
             // 
+            // saveCorruptedFile
+            // 
+            this.saveCorruptedFile.DefaultExt = "bat";
+            this.saveCorruptedFile.Filter = "Batch file|*.bat|Windows NT command script|*.cmd|All files|*.*";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -343,6 +352,7 @@ namespace MessBatch
         private System.Windows.Forms.RadioButton stringReverserRadio;
         private System.Windows.Forms.RadioButton colorSwapperRadio;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.SaveFileDialog saveCorruptedFile;
     }
 }
 
