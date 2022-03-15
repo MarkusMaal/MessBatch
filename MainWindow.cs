@@ -165,7 +165,148 @@ namespace MessBatch
                     BatchLines[a] = BatchLines[b];
                     BatchLines[b] = temp;
                 }
-                MessageBox.Show(string.Format("{0} lines swapped", rawstrength), "Line swap corruption", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                UpdateText();
+                MessageBox.Show(string.Format("{0} line(s) swapped", rawstrength), "Line swap corruption", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (substringCorruptorRadio.Checked)
+            {
+                // failsafe to avoid infinite loops
+                if (!string.Join("\r\n", BatchLines).Contains(":~"))
+                {
+                    MessageBox.Show("This batch file does not contain substring references.", "Cannot apply this corruption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                for (int i = 0; i < rawstrength; i++)
+                {
+                    int lineid = r.Next(0, BatchLines.Count - 1);
+                    while (!BatchLines[lineid].Contains(":~"))
+                    {
+                        lineid = r.Next(0, BatchLines.Count - 1);
+                    }
+                    string line = BatchLines[lineid];
+                    // determine variable separator
+                    char variable_sep = '%';
+                    if (!line.Contains(variable_sep))
+                    {
+                        variable_sep = '!';
+                    }
+                    if (line.Contains("!") && line.Contains("%")) {
+                        variable_sep = '!';
+                    }
+                    string original_substring = "";
+                    string variable_name = "";
+                    bool is_range = false;
+                    int range_A = r.Next(-10, 10);
+                    int range_B = r.Next(-10, 20);
+                    while (range_A > range_B)
+                    {
+                        range_A = r.Next(-10, 10);
+                        range_B = r.Next(-10, 20);
+                    }
+                    foreach (string token in line.Split(variable_sep))
+                    {
+                        if (token.Contains(":~"))
+                        {
+                            original_substring = variable_sep.ToString() + token + variable_sep.ToString();
+                            is_range = token.Contains(",");
+                            variable_name = token.Split(':')[0];
+                            break;
+                        }
+                    }
+                    string new_substring = variable_sep.ToString() + variable_name + ":~";
+                    if (is_range)
+                    {
+                        new_substring = string.Format("{0}{1},{2}{3}", new_substring, range_A, range_B, variable_sep);
+                    } else
+                    {
+                        new_substring = string.Format("{0}{1}{2}", new_substring, range_A, variable_sep);
+                    }
+                    BatchLines[lineid] = BatchLines[lineid].Replace(original_substring, new_substring);
+                }
+                UpdateText();
+                MessageBox.Show(string.Format("Substring corruption performed on random lines {0} time(s).", rawstrength), "Substring corruptor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (stringCorruptorRadio.Checked || stringReverserRadio.Checked)
+            {
+                string[] tokens = {
+                    "echo",
+                    "echo.",
+                    "echo,",
+                    "echo:",
+                    "echo;"
+                };
+                List<int> stringlines = new List<int>();
+                for (int i = 0; i < BatchLines.Count; i++)
+                {
+                    if ((!CheckTokens(tokens, BatchLines[i])) && (!BatchLines[i].Contains("&")) && (!BatchLines[i].Contains(">")) && (!BatchLines[i].Contains("<")) && (!BatchLines[i].Contains("|")))
+                    {
+                        stringlines.Add(i);
+                    }
+                }
+                for (int j = 0; j < rawstrength; j++)
+                {
+                    int id = r.Next(0, BatchLines.Count);
+                    string line = BatchLines[id];
+                    List<string> newtokens = new List<string>();
+                    bool enablecorruptions = false;
+                    if ((line.ToLower().Contains("echo")))
+                    {
+                        foreach (string word in line.Split(' '))
+                        {
+                            string rwword = word;
+                            bool cont = false;
+                            foreach (string token in tokens)
+                            {
+                                if (rwword.ToLower().Contains(token))
+                                {
+                                    cont = true;
+                                    newtokens.Add(word);
+                                    enablecorruptions = true;
+                                    break;
+                                }
+                            }
+                            if (!enablecorruptions)
+                            {
+                                cont = true;
+                                newtokens.Add(word);
+                            }
+                            if (cont) { continue; }
+                            if (stringCorruptorRadio.Checked)
+                            {
+                                for (int k = 0; k < rawstrength; k++)
+                                {
+                                    List<char> chararray = rwword.ToCharArray().ToList<char>();
+                                    if (rwword.Length < 3)
+                                    {
+                                        break;
+                                    }
+                                    int a = r.Next(0, rwword.Length - 1);
+                                    int b = r.Next(0, rwword.Length - 1);
+                                    while (a == b)
+                                    {
+                                        b = r.Next(0, rwword.Length - 1);
+                                    }
+                                    char backup = chararray[a];
+                                    chararray[a] = chararray[b];
+                                    chararray[b] = backup;
+                                    rwword = new string(chararray.ToArray());
+                                }
+                            } else
+                            {
+                                string newstr = "";
+                                for (int k = rwword.Length -1; k >= 0; k--)
+                                {
+                                    newstr = newstr + rwword[k].ToString();
+                                }
+                                rwword = newstr;
+                            }
+                            newtokens.Add(rwword);
+                        }
+                        BatchLines[id] = string.Join(" ", newtokens);
+                    }
+                }
+                UpdateText();
+                MessageBox.Show(string.Format("{0} line(s) modified", rawstrength), "String corruptor", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (colorSwapperRadio.Checked)
             {
@@ -205,7 +346,7 @@ namespace MessBatch
                     BatchLines[color_line] = replaced_line;
                 }
                 UpdateText();
-                MessageBox.Show(string.Format("{0} modifications were made", rawstrength), "Color swapper", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format("{0} modification(s) made", rawstrength), "Color swapper", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (functionSwapRadio.Checked)
             {
@@ -240,13 +381,16 @@ namespace MessBatch
                     {
                         if (CheckTokens(tokens, token))
                         {
-                            if (set_prefix) {
+                            if (set_prefix)
+                            {
                                 cmd_prefix = cmd_prefix + token + " ";
-                            } else
+                            }
+                            else
                             {
                                 cmd_suffix = cmd_suffix + " ";
                             }
-                        } else
+                        }
+                        else
                         {
                             command = token;
                             set_prefix = false;
@@ -256,14 +400,15 @@ namespace MessBatch
                     {
                         line_str = cmd_prefix + command + " :" + replacement_function + " " + cmd_suffix[..1];
                         BatchLines[line] = line_str;
-                    } catch
+                    }
+                    catch
                     {
 
                     }
                 }
-                MessageBox.Show(string.Format("{0} modifications were made", rawstrength), "Function swap corruption", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                UpdateText();
+                MessageBox.Show(string.Format("{0} modification(s) made", rawstrength), "Function swap corruption", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            UpdateText();
         }
 
         // Check if a line contains disallowed tokens for line swap corruptions
@@ -292,10 +437,17 @@ namespace MessBatch
             {
                 File.WriteAllLines(saveCorruptedFile.FileName, BatchLines.ToArray(), encoding);
                 MessageBox.Show("The file was saved.", "MessBatch batch file corruptor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                justSaveButton.Enabled = true;
             } else
             {
                 MessageBox.Show("The file was not saved.", "MessBatch batch file corruptor", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            File.WriteAllLines(saveCorruptedFile.FileName, BatchLines.ToArray(), encoding);
+            MessageBox.Show("The file was saved.", "MessBatch batch file corruptor", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

@@ -52,6 +52,7 @@ namespace MessBatch
             this.colorSwapperRadio = new System.Windows.Forms.RadioButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.saveCorruptedFile = new System.Windows.Forms.SaveFileDialog();
+            this.justSaveButton = new System.Windows.Forms.Button();
             this.previewGroup.SuspendLayout();
             this.corruptionsGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strengthBar)).BeginInit();
@@ -144,6 +145,7 @@ namespace MessBatch
             // 
             this.corruptionsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.corruptionsGroup.Controls.Add(this.justSaveButton);
             this.corruptionsGroup.Controls.Add(this.corruptionDescription);
             this.corruptionsGroup.Controls.Add(this.saveButton);
             this.corruptionsGroup.Controls.Add(this.corruptButton);
@@ -177,7 +179,7 @@ namespace MessBatch
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 4;
-            this.saveButton.Text = "&Save as";
+            this.saveButton.Text = "Save &as";
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
@@ -187,7 +189,7 @@ namespace MessBatch
             this.corruptButton.Location = new System.Drawing.Point(194, 248);
             this.corruptButton.Name = "corruptButton";
             this.corruptButton.Size = new System.Drawing.Size(75, 23);
-            this.corruptButton.TabIndex = 3;
+            this.corruptButton.TabIndex = 5;
             this.corruptButton.Text = "Co&rrupt!";
             this.corruptButton.UseVisualStyleBackColor = true;
             this.corruptButton.Click += new System.EventHandler(this.corruptButton_Click);
@@ -302,6 +304,18 @@ namespace MessBatch
             this.saveCorruptedFile.DefaultExt = "bat";
             this.saveCorruptedFile.Filter = "Batch file|*.bat|Windows NT command script|*.cmd|All files|*.*";
             // 
+            // justSaveButton
+            // 
+            this.justSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.justSaveButton.Enabled = false;
+            this.justSaveButton.Location = new System.Drawing.Point(32, 248);
+            this.justSaveButton.Name = "justSaveButton";
+            this.justSaveButton.Size = new System.Drawing.Size(75, 23);
+            this.justSaveButton.TabIndex = 3;
+            this.justSaveButton.Text = "&Save";
+            this.justSaveButton.UseVisualStyleBackColor = true;
+            this.justSaveButton.Click += new System.EventHandler(this.button1_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -353,6 +367,7 @@ namespace MessBatch
         private System.Windows.Forms.RadioButton colorSwapperRadio;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.SaveFileDialog saveCorruptedFile;
+        private System.Windows.Forms.Button justSaveButton;
     }
 }
 
