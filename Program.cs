@@ -9,8 +9,9 @@ namespace MessBatch
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
+        public static string filename = "";
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();

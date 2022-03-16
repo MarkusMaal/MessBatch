@@ -97,7 +97,13 @@ namespace MessBatch
         private void MainWindow_Load(object sender, EventArgs e)
         {
             strengthLabel.Text = string.Format("Strength: {0}%", (double)strengthBar.Value / 100.0);
+            batchfilePath.Text = Program.filename;
             ctype = "lineswap";
+            if (File.Exists(batchfilePath.Text))
+            {
+                openBatchfile.FileName = Program.filename;
+                openBatchfileButton.PerformClick();
+            }
         }
 
         void corrupt_str()
