@@ -1,4 +1,4 @@
-﻿# ![image](https://user-images.githubusercontent.com/45605071/158536310-f2df0bf1-7100-4354-94db-e2f33a7ef5fe.png) MessBatch
+﻿# ![image](https://user-images.githubusercontent.com/45605071/158536310-f2df0bf1-7100-4354-94db-e2f33a7ef5fe.png) <table><tr><td valign="center">MessBatch</td></tr></table>
 This program allows you to semi-nondestructively corrupt batch files.<br/><br/>
 ![image](https://user-images.githubusercontent.com/45605071/158531943-299602ce-7cc2-41dc-878c-f557e6972c90.png)<br/>
 ## Features
