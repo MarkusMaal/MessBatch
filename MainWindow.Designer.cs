@@ -38,6 +38,7 @@ namespace MessBatch
             this.previewBox = new System.Windows.Forms.TextBox();
             this.previewGroup = new System.Windows.Forms.GroupBox();
             this.corruptionsGroup = new System.Windows.Forms.GroupBox();
+            this.compareButton = new System.Windows.Forms.Button();
             this.justSaveButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.corruptButton = new System.Windows.Forms.Button();
@@ -122,7 +123,7 @@ namespace MessBatch
             this.previewBox.Multiline = true;
             this.previewBox.Name = "previewBox";
             this.previewBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.previewBox.Size = new System.Drawing.Size(355, 258);
+            this.previewBox.Size = new System.Drawing.Size(307, 258);
             this.previewBox.TabIndex = 5;
             this.previewBox.Text = "Please open a batch file";
             this.previewBox.WordWrap = false;
@@ -137,7 +138,7 @@ namespace MessBatch
             this.previewGroup.Enabled = false;
             this.previewGroup.Location = new System.Drawing.Point(12, 41);
             this.previewGroup.Name = "previewGroup";
-            this.previewGroup.Size = new System.Drawing.Size(361, 280);
+            this.previewGroup.Size = new System.Drawing.Size(313, 280);
             this.previewGroup.TabIndex = 6;
             this.previewGroup.TabStop = false;
             this.previewGroup.Text = "Preview";
@@ -146,6 +147,7 @@ namespace MessBatch
             // 
             this.corruptionsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.corruptionsGroup.Controls.Add(this.compareButton);
             this.corruptionsGroup.Controls.Add(this.justSaveButton);
             this.corruptionsGroup.Controls.Add(this.saveButton);
             this.corruptionsGroup.Controls.Add(this.corruptButton);
@@ -153,18 +155,29 @@ namespace MessBatch
             this.corruptionsGroup.Controls.Add(this.strengthLabel);
             this.corruptionsGroup.Controls.Add(this.corruptionSelectorPanel);
             this.corruptionsGroup.Enabled = false;
-            this.corruptionsGroup.Location = new System.Drawing.Point(379, 41);
+            this.corruptionsGroup.Location = new System.Drawing.Point(328, 41);
             this.corruptionsGroup.Name = "corruptionsGroup";
-            this.corruptionsGroup.Size = new System.Drawing.Size(275, 277);
+            this.corruptionsGroup.Size = new System.Drawing.Size(326, 280);
             this.corruptionsGroup.TabIndex = 7;
             this.corruptionsGroup.TabStop = false;
             this.corruptionsGroup.Text = "Corruptions";
+            // 
+            // compareButton
+            // 
+            this.compareButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.compareButton.Location = new System.Drawing.Point(7, 251);
+            this.compareButton.Name = "compareButton";
+            this.compareButton.Size = new System.Drawing.Size(75, 23);
+            this.compareButton.TabIndex = 6;
+            this.compareButton.Text = "Compar&e";
+            this.compareButton.UseVisualStyleBackColor = true;
+            this.compareButton.Click += new System.EventHandler(this.CompareClick);
             // 
             // justSaveButton
             // 
             this.justSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.justSaveButton.Enabled = false;
-            this.justSaveButton.Location = new System.Drawing.Point(32, 248);
+            this.justSaveButton.Location = new System.Drawing.Point(83, 251);
             this.justSaveButton.Name = "justSaveButton";
             this.justSaveButton.Size = new System.Drawing.Size(75, 23);
             this.justSaveButton.TabIndex = 3;
@@ -175,7 +188,7 @@ namespace MessBatch
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Location = new System.Drawing.Point(113, 248);
+            this.saveButton.Location = new System.Drawing.Point(164, 251);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 4;
@@ -186,7 +199,7 @@ namespace MessBatch
             // corruptButton
             // 
             this.corruptButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.corruptButton.Location = new System.Drawing.Point(194, 248);
+            this.corruptButton.Location = new System.Drawing.Point(245, 251);
             this.corruptButton.Name = "corruptButton";
             this.corruptButton.Size = new System.Drawing.Size(75, 23);
             this.corruptButton.TabIndex = 5;
@@ -202,7 +215,7 @@ namespace MessBatch
             this.strengthBar.Maximum = 10000;
             this.strengthBar.Minimum = 1;
             this.strengthBar.Name = "strengthBar";
-            this.strengthBar.Size = new System.Drawing.Size(266, 45);
+            this.strengthBar.Size = new System.Drawing.Size(317, 45);
             this.strengthBar.TabIndex = 2;
             this.strengthBar.TickFrequency = 1000;
             this.strengthBar.Value = 1;
@@ -228,7 +241,7 @@ namespace MessBatch
             this.corruptionSelectorPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.corruptionSelectorPanel.Location = new System.Drawing.Point(3, 19);
             this.corruptionSelectorPanel.Name = "corruptionSelectorPanel";
-            this.corruptionSelectorPanel.Size = new System.Drawing.Size(269, 84);
+            this.corruptionSelectorPanel.Size = new System.Drawing.Size(320, 84);
             this.corruptionSelectorPanel.TabIndex = 0;
             // 
             // lineSwapperRadio
@@ -370,6 +383,7 @@ namespace MessBatch
         private System.Windows.Forms.SaveFileDialog saveCorruptedFile;
         private System.Windows.Forms.Button justSaveButton;
         private System.Windows.Forms.Timer waitForThread;
+        private System.Windows.Forms.Button compareButton;
     }
 }
 

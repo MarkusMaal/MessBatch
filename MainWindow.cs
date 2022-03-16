@@ -12,6 +12,7 @@ namespace MessBatch
     {
         // This list contains the lines for the batch file
         List<string> BatchLines = new List<string>();
+        List<string> OriginalLines = new List<string>();
         // Encoding for the batch file
         Encoding encoding = Encoding.ASCII;
         // Convert strength value to number of lines
@@ -19,7 +20,6 @@ namespace MessBatch
         string ctype = "";
         int strength;
         bool finished = false;
-        Thread corruptThread;
         public MainWindow()
         {
             InitializeComponent();
@@ -63,6 +63,8 @@ namespace MessBatch
             }
             // Update the preview and enable certain controls
             UpdateText();
+            OriginalLines.Clear();
+            OriginalLines.AddRange(previewBox.Text.Replace("\r\n", "\n").Split('\n'));
             previewGroup.Enabled = true;
             closeButton.Enabled = true;
             corruptionsGroup.Enabled = true;
@@ -230,6 +232,7 @@ namespace MessBatch
                     if (!string.Join("\r\n", BatchLines).Contains(":~"))
                     {
                         MessageBox.Show("This batch file does not contain substring references.", "Cannot apply this corruption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        finished = true;
                         return;
                     }
                     for (int i = 0; i < rawstrength; i++)
@@ -496,6 +499,14 @@ namespace MessBatch
             {
                 ctype = "colorswap";
             }
+        }
+
+        private void CompareClick(object sender, EventArgs e)
+        {
+            Compare c = new Compare();
+            c.corruptedPreview.Text = string.Join("\r\n", BatchLines);
+            c.originalPreview.Text = string.Join("\r\n", OriginalLines);
+            c.Show();
         }
     }
 }
