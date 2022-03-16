@@ -38,7 +38,7 @@ namespace MessBatch
             this.previewBox = new System.Windows.Forms.TextBox();
             this.previewGroup = new System.Windows.Forms.GroupBox();
             this.corruptionsGroup = new System.Windows.Forms.GroupBox();
-            this.corruptionDescription = new System.Windows.Forms.Label();
+            this.justSaveButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.corruptButton = new System.Windows.Forms.Button();
             this.strengthBar = new System.Windows.Forms.TrackBar();
@@ -52,7 +52,7 @@ namespace MessBatch
             this.colorSwapperRadio = new System.Windows.Forms.RadioButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.saveCorruptedFile = new System.Windows.Forms.SaveFileDialog();
-            this.justSaveButton = new System.Windows.Forms.Button();
+            this.waitForThread = new System.Windows.Forms.Timer(this.components);
             this.previewGroup.SuspendLayout();
             this.corruptionsGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strengthBar)).BeginInit();
@@ -94,7 +94,7 @@ namespace MessBatch
             this.openBatchfileButton.Name = "openBatchfileButton";
             this.openBatchfileButton.Size = new System.Drawing.Size(75, 23);
             this.openBatchfileButton.TabIndex = 2;
-            this.openBatchfileButton.Text = "&Open";
+            this.openBatchfileButton.Text = "(Re)&open";
             this.toolTip1.SetToolTip(this.openBatchfileButton, "Open this file. This will lock the file, while it\'s being loaded.");
             this.openBatchfileButton.UseVisualStyleBackColor = true;
             this.openBatchfileButton.Click += new System.EventHandler(this.openBatchfileButton_Click);
@@ -126,6 +126,7 @@ namespace MessBatch
             this.previewBox.TabIndex = 5;
             this.previewBox.Text = "Please open a batch file";
             this.previewBox.WordWrap = false;
+            this.previewBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.previewBox_KeyDown);
             // 
             // previewGroup
             // 
@@ -146,7 +147,6 @@ namespace MessBatch
             this.corruptionsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.corruptionsGroup.Controls.Add(this.justSaveButton);
-            this.corruptionsGroup.Controls.Add(this.corruptionDescription);
             this.corruptionsGroup.Controls.Add(this.saveButton);
             this.corruptionsGroup.Controls.Add(this.corruptButton);
             this.corruptionsGroup.Controls.Add(this.strengthBar);
@@ -160,17 +160,17 @@ namespace MessBatch
             this.corruptionsGroup.TabStop = false;
             this.corruptionsGroup.Text = "Corruptions";
             // 
-            // corruptionDescription
+            // justSaveButton
             // 
-            this.corruptionDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.corruptionDescription.Location = new System.Drawing.Point(6, 163);
-            this.corruptionDescription.Name = "corruptionDescription";
-            this.corruptionDescription.Size = new System.Drawing.Size(263, 82);
-            this.corruptionDescription.TabIndex = 5;
-            this.corruptionDescription.Text = "Line swapper randomly swaps batch file lines, causing weird things to happen. Thi" +
-    "s is also a more destructive option.";
+            this.justSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.justSaveButton.Enabled = false;
+            this.justSaveButton.Location = new System.Drawing.Point(32, 248);
+            this.justSaveButton.Name = "justSaveButton";
+            this.justSaveButton.Size = new System.Drawing.Size(75, 23);
+            this.justSaveButton.TabIndex = 3;
+            this.justSaveButton.Text = "&Save";
+            this.justSaveButton.UseVisualStyleBackColor = true;
+            this.justSaveButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // saveButton
             // 
@@ -241,8 +241,10 @@ namespace MessBatch
             this.lineSwapperRadio.TabIndex = 0;
             this.lineSwapperRadio.TabStop = true;
             this.lineSwapperRadio.Text = "Line swapper";
+            this.toolTip1.SetToolTip(this.lineSwapperRadio, "Line swapper randomly swaps batch file lines, causing weird things to happen. Thi" +
+        "s is also a more destructive option.");
             this.lineSwapperRadio.UseVisualStyleBackColor = true;
-            this.lineSwapperRadio.CheckedChanged += new System.EventHandler(this.SwapDescription);
+            this.lineSwapperRadio.CheckedChanged += new System.EventHandler(this.CorruptionTypeSet);
             // 
             // functionSwapRadio
             // 
@@ -252,8 +254,10 @@ namespace MessBatch
             this.functionSwapRadio.Size = new System.Drawing.Size(102, 19);
             this.functionSwapRadio.TabIndex = 1;
             this.functionSwapRadio.Text = "Function swap";
+            this.toolTip1.SetToolTip(this.functionSwapRadio, "Function swap changes which functions/labels the goto and call commands refer to," +
+        " while making sure each reference is valid.");
             this.functionSwapRadio.UseVisualStyleBackColor = true;
-            this.functionSwapRadio.CheckedChanged += new System.EventHandler(this.SwapDescription);
+            this.functionSwapRadio.CheckedChanged += new System.EventHandler(this.CorruptionTypeSet);
             // 
             // stringCorruptorRadio
             // 
@@ -263,8 +267,9 @@ namespace MessBatch
             this.stringCorruptorRadio.Size = new System.Drawing.Size(109, 19);
             this.stringCorruptorRadio.TabIndex = 2;
             this.stringCorruptorRadio.Text = "String corruptor";
+            this.toolTip1.SetToolTip(this.stringCorruptorRadio, "String corruptor changes individual characters on strings.");
             this.stringCorruptorRadio.UseVisualStyleBackColor = true;
-            this.stringCorruptorRadio.CheckedChanged += new System.EventHandler(this.SwapDescription);
+            this.stringCorruptorRadio.CheckedChanged += new System.EventHandler(this.CorruptionTypeSet);
             // 
             // substringCorruptorRadio
             // 
@@ -274,8 +279,10 @@ namespace MessBatch
             this.substringCorruptorRadio.Size = new System.Drawing.Size(128, 19);
             this.substringCorruptorRadio.TabIndex = 3;
             this.substringCorruptorRadio.Text = "Substring corruptor";
+            this.toolTip1.SetToolTip(this.substringCorruptorRadio, "Substring corruptor changes the indexes on substrings (e.g. if the substring is %" +
+        "variable:~0,4% it may get changed to %variable:~1,5%).");
             this.substringCorruptorRadio.UseVisualStyleBackColor = true;
-            this.substringCorruptorRadio.CheckedChanged += new System.EventHandler(this.SwapDescription);
+            this.substringCorruptorRadio.CheckedChanged += new System.EventHandler(this.CorruptionTypeSet);
             // 
             // stringReverserRadio
             // 
@@ -285,8 +292,9 @@ namespace MessBatch
             this.stringReverserRadio.Size = new System.Drawing.Size(100, 19);
             this.stringReverserRadio.TabIndex = 4;
             this.stringReverserRadio.Text = "String reverser";
+            this.toolTip1.SetToolTip(this.stringReverserRadio, "String reverser reverses strings randomly.");
             this.stringReverserRadio.UseVisualStyleBackColor = true;
-            this.stringReverserRadio.CheckedChanged += new System.EventHandler(this.SwapDescription);
+            this.stringReverserRadio.CheckedChanged += new System.EventHandler(this.CorruptionTypeSet);
             // 
             // colorSwapperRadio
             // 
@@ -296,25 +304,19 @@ namespace MessBatch
             this.colorSwapperRadio.Size = new System.Drawing.Size(101, 19);
             this.colorSwapperRadio.TabIndex = 5;
             this.colorSwapperRadio.Text = "Color swapper";
+            this.toolTip1.SetToolTip(this.colorSwapperRadio, "Color swapper randomizes colors (e.g. if the color is white on black, it may get " +
+        "changed to green on yellow).");
             this.colorSwapperRadio.UseVisualStyleBackColor = true;
-            this.colorSwapperRadio.CheckedChanged += new System.EventHandler(this.SwapDescription);
+            this.colorSwapperRadio.CheckedChanged += new System.EventHandler(this.CorruptionTypeSet);
             // 
             // saveCorruptedFile
             // 
             this.saveCorruptedFile.DefaultExt = "bat";
             this.saveCorruptedFile.Filter = "Batch file|*.bat|Windows NT command script|*.cmd|All files|*.*";
             // 
-            // justSaveButton
+            // waitForThread
             // 
-            this.justSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.justSaveButton.Enabled = false;
-            this.justSaveButton.Location = new System.Drawing.Point(32, 248);
-            this.justSaveButton.Name = "justSaveButton";
-            this.justSaveButton.Size = new System.Drawing.Size(75, 23);
-            this.justSaveButton.TabIndex = 3;
-            this.justSaveButton.Text = "&Save";
-            this.justSaveButton.UseVisualStyleBackColor = true;
-            this.justSaveButton.Click += new System.EventHandler(this.button1_Click);
+            this.waitForThread.Tick += new System.EventHandler(this.waitForThread_Tick);
             // 
             // MainWindow
             // 
@@ -360,7 +362,6 @@ namespace MessBatch
         private System.Windows.Forms.FlowLayoutPanel corruptionSelectorPanel;
         private System.Windows.Forms.RadioButton lineSwapperRadio;
         private System.Windows.Forms.RadioButton functionSwapRadio;
-        private System.Windows.Forms.Label corruptionDescription;
         private System.Windows.Forms.RadioButton stringCorruptorRadio;
         private System.Windows.Forms.RadioButton substringCorruptorRadio;
         private System.Windows.Forms.RadioButton stringReverserRadio;
@@ -368,6 +369,7 @@ namespace MessBatch
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.SaveFileDialog saveCorruptedFile;
         private System.Windows.Forms.Button justSaveButton;
+        private System.Windows.Forms.Timer waitForThread;
     }
 }
 
