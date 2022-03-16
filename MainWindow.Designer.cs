@@ -30,6 +30,7 @@ namespace MessBatch
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.batchfilePath = new System.Windows.Forms.TextBox();
             this.browseButton = new System.Windows.Forms.Button();
             this.openBatchfile = new System.Windows.Forms.OpenFileDialog();
@@ -342,8 +343,8 @@ namespace MessBatch
             this.Controls.Add(this.openBatchfileButton);
             this.Controls.Add(this.browseButton);
             this.Controls.Add(this.batchfilePath);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
-            this.ShowIcon = false;
             this.Text = "MessBatch - A semi-nondestructive batch file corruptor";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.previewGroup.ResumeLayout(false);
